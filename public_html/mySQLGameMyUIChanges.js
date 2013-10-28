@@ -239,15 +239,12 @@ function querySubmit(button){
     
     if (inputs['defenders'] === 'max')
     {
-        console.log("defenders");
         inputs['defenders'] = Math.floor(currentRow[4] / 10);
     }else if( inputs['attackers'] === 'max' )
     {
-        console.log("attackers");
         inputs['attackers'] = Math.floor(currentRow[4] / 10);
     }else if(inputs['money_factories'] === 'max')
     {
-        console.log("money_factories"); 
         var sum = 0;
         var ctr;
         for (var i = currentRow[3] + 1; sum  + Math.pow(2, i) * 10 < currentRow[4]; ++i)
@@ -258,7 +255,6 @@ function querySubmit(button){
         inputs['money_factories'] = ctr;
    }else if(inputs['fuel_factories'] === 'max')
    {
-       console.log("fuel_factories");
        var sum = 0;
        var ctr;
        for (var i = currentRow[5] + 1; sum  + Math.pow(2, i) * 7.5 < currentRow[4]; ++i)
@@ -269,8 +265,7 @@ function querySubmit(button){
        inputs['fuel_factories'] = ctr;
    }else if(inputs['amount'] === 'max')
    {
-       console.log("amount");
+       //not yet implemented
    }
-   console.log(inputs);
-	//$.post('update/queries', inputs, update_queries_data);
+   $.post('update/queries', inputs, update_queries_data);
 }
