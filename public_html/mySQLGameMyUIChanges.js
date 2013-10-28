@@ -257,20 +257,20 @@ function querySubmit(button){
         }
         inputs['money_factories'] = ctr;
    }else if(inputs['fuel_factories'] === 'max')
-    {
-        console.log("fuel_factories");
-        var sum = 0;
-        var ctr;
-        for (var i = currentRow[5] + 1; sum  + Math.pow(2, i) * 7.5 < currentRow[4]; ++i)
-        {
-            sum += Math.pow(2, i) *7.5;
-            ctr++;
-        }
-        inputs['fuel_factories'] = ctr;
-    }else if(inputs['amount'] === 'max')
-    {
-        console.log("amount");
-    }
-    
+   {
+       console.log("fuel_factories");
+       var sum = 0;
+       var ctr;
+       for (var i = currentRow[5] + 1; sum  + Math.pow(2, i) * 7.5 < currentRow[4]; ++i)
+       {
+           sum += Math.pow(2, i) *7.5;
+           ctr++;
+       }
+       inputs['fuel_factories'] = ctr;
+   }else if(inputs['amount'] === 'max')
+   {
+       console.log("amount");
+   }
+   console.log(inputs);
 	//$.post('update/queries', inputs, update_queries_data);
 }
