@@ -246,7 +246,7 @@ function querySubmit(button){
     }else if(inputs['money_factories'] === 'max')
     {
         var sum = 0;
-        var ctr;
+        var ctr = 0;
         for (var i = currentRow[3] + 1; sum  + Math.pow(2, i) * 10 < currentRow[4]; ++i)
         {
             sum += Math.pow(2, i) * 10;
@@ -256,7 +256,7 @@ function querySubmit(button){
    }else if(inputs['fuel_factories'] === 'max')
    {
        var sum = 0;
-       var ctr;
+       var ctr = 0;
        for (var i = currentRow[5] + 1; sum  + Math.pow(2, i) * 7.5 < currentRow[4]; ++i)
        {
            sum += Math.pow(2, i) *7.5;
