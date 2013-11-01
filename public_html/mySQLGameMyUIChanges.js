@@ -1,55 +1,80 @@
-$("#dashboard_header").html($("#dashboard_header").html() + '<br/><a href="javascript:togglePanel2();">Show Attackable Rows</a>&nbsp;&nbsp;<a href="javascript:togglePanel3();">Legend</a>');
-$(".dashboard").before('<div id="panel2" style="position: absolute; width: 600px; height: 300px; top: 320px; border:1px solid #000; left: 20px; z-index: 999; background-color:#FFF; cursor: auto;">');
-$(".dashboard").before('<div id="panel3" style="position: absolute; width: 600px; height: 300px; top: 320px; border:1px solid #000; left: 20px; z-index: 999; background-color:#FFF; cursor: auto;">');
-$("#panel2, #panel3").hide();
-var rowHeaders = row_format.valueOf();
-var currentRow;
-var previousArgs;
-var panelShown2 = false; 
-var panelShown3 = false;
 
+// Adds a link into the head of the file
+// as well as adding two other panels, one for a Legend of the changes,
+// and the other to show the attackable rows within a few hundred
+$("#dashboard_header").html($("#dashboard_header").html() + '<br/><a href="javascript:togglePossibleAttacks();">Show Attackable Rows</a>&nbsp;&nbsp;<a href="javascript:toggleLegend();">Legend</a>');
+$(".dashboard").before('<div id="possibleAttacks" style="position: absolute; width: 600px; height: 300px; top: 320px; border:1px solid #000; left: 20px; z-index: 999; background-color:#FFF; cursor: auto;">');
+$(".dashboard").before('<div id="legend" style="position: absolute; width: 600px; height: 300px; top: 320px; border:1px solid #000; left: 20px; z-index: 999; background-color:#FFF; cursor: auto;">');
+$("#possibleAttacks, #legend").hide();
+
+// adds new heads to the rows
+// current headers include Name, Owner, Fuel, Row Num etc.
+var rowHeaders = row_format.valueOf();
+
+// The selected row in the top left panel
+// containing a list of all your own rows
+var currentRow;
+
+// Used to keep track of whether you have searched
+// in the top right panel
+var previousArgs;
+
+// Whether the custom panels are shown
+var possibleAttacksShown = false; 
+var legendShown = false;
+
+// Push the custom header onto the list of headers
+// Can defend gives a approx amount of money/fuel you can defend
+// Worth attacking in either terms of money or fuel
 if (rowHeaders.length === 12)
 {
     rowHeaders.push([['can_defend'], ['attack'], 1]);
-    //update_rows;
     updateRows(rowID());
 }
-function togglePanel2() {
-    panelShown2 = !panelShown2;
-    if (panelShown2) {
-        $("#panel2").show();
+
+// Toggles the two panels
+function togglePossibleAttacks() {
+    possibleAttacksShown = !possibleAttacksShown;
+    if (possibleAttacksShown) {
+        $("#possibleAttacks").show();
     } else {
-        $("#panel2").hide();
+        $("#possibleAttacks").hide();
     }
-    updatePanel2();
+    updatePossibleAttacks();
 }
-function updatePanel2() {
-    $("#panel2").html('<div style="border-bottom:2px #000 solid;">Possible rows to attack&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <a style="padding-left:10px" href="javascript:togglePanel2();">[close]</a></div>' + 'Will be done soon. Hopefully <br/>');
+function updatePossibleAttacks() {
+    $("#possibleAttacks").html('<div style="border-bottom:2px #000 solid;">Possible rows to attack&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <a style="padding-left:10px" href="javascript:togglePossibleAttacks();">[close]</a></div>' + 'Will be done soon. Hopefully <br/>');
 }
-function togglePanel3() {
-    panelShown3 = !panelShown3;
-    if (panelShown3) {
-        $("#panel3").show();
+function toggleLegend() {
+    legendShown = !legendShown;
+    if (legendShown) {
+        $("#legend").show();
     } else {
-        $("#panel3").hide();
+        $("#legend").hide();
     }
-    updatePanel3();
+    updateLegend();
 }
-function updatePanel3() {
-    $("#panel3").html('<div style="border-bottom:2px #000 solid;">Legend&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <a style="padding-left:10px" href="javascript:togglePanel3();">[close]</a></div>' + 'Strike through means friendly or empty space<br/>' + '<font color="green">Green means is profitable in terms of fuel and money to attack<br/>' + '<font color="AA4400">Orange means it\'s profitable in terms of fuel but not money<br/>' + '<font color="blue">Blue means it\'s profitable in terms of money but not fuel to attack<br/>' + '<font color="black">Black means it\'s not profitable in terms of fuel and money to attack<br/><br/>' + 'All calculations on based upon your selected row in "Your rows"');
+
+// I probably can take this one out and just make it static
+function updateLegend() {
+    $("#legend").html('<div style="border-bottom:2px #000 solid;">Legend&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <a style="padding-left:10px" href="javascript:toggleLegend();">[close]</a></div>' + 'Strike through means friendly or empty space<br/>' + '<font color="green">Green means is profitable in terms of fuel and money to attack<br/>' + '<font color="AA4400">Orange means it\'s profitable in terms of fuel but not money<br/>' + '<font color="blue">Blue means it\'s profitable in terms of money but not fuel to attack<br/>' + '<font color="black">Black means it\'s not profitable in terms of fuel and money to attack<br/><br/>' + 'All calculations on based upon your selected row in "Your rows"');
 }
+
+// Updates personal panel row with the custome header 
+// and colors the row depending on how much they can hold and currently have
 function update_rows(data)
 {
     if (!data.length)
         return;
     $('#rows #no_rows').remove();
     method = data.shift();
+    
     if (method == 'refresh') {
         $('#rows_content').empty();
         $('#rows_headers').empty();
 
         rowID(data.shift());
-        //rowHeaders = row_format;//data.shift();
+        
         for (var i = 0; i < data.length; i++)
         {
             data[i][12] = data[i][7] * 20 + Math.floor(data[i][9] * 10 / 2);
@@ -78,8 +103,8 @@ function update_rows(data)
                     style = (j % 2) ? 'odd-col' : 'even-col'
                 }
 
-
-                if (data[j][12] < data[j][4] && i === 12)
+                // Updates grid color based upon if it is over its max carry size
+                if (data[j][12] < data[j][4] && i === 12) 
                 {
                     switch (style)
                     {
@@ -102,26 +127,34 @@ function update_rows(data)
 
     }
 }
+
+// Updates the browse panel that contains all the other rows
 function update_browse_data(data) {
     $('#browse_content').empty();
+    
     if (data.no_fuel) {
         $('#browse_query').html("<span style='color:red'>Row " + data.row_id + " must have at least 1 fuel to browse.</span>");
     } else if (data.outOfRange) {
         $('#browse_query').html("<span style='color:red'>Browse target out of range.</span>");
     } else {
+        
         $('#browse_query').html("SELECT * FROM rows WHERE row_id>=" + data.start + " and row_id<" + (data.start + 10) + ";<br>" +
                 ('prev' in data ? "<a href='#' onClick='updateBrowse({\"row_id\":" + data.row_id + ", \"start\":" + data.prev + "});return false'><< rows " + data.prev + " to " + (data.prev + 9) + "</a>" : "") +
                 " [cost 1 fuel - <a href='#' onClick='updateBrowse({\"row_id\":" + data.row_id + ", \"start\":" + data.start + "});return false'>refresh</a>] " +
                 (data.next ? "<a href='#' onClick='updateBrowse({\"row_id\":" + data.row_id + ", \"start\":" + data.next + "});return false'>rows " + data.next + " to " + (data.next + 9) + " >></a>" : "")
                 );
-        var headers = row_format;//data.shift();
+                
         var out = '<tr class="odd-row"><th class="even-col"></th>';
         var style;
-        for (var i = 0; i < headers.length; i++) { //>
+        
+        // Places headers at top of grid
+        for (var i = 0; i < rowHeaders.length; i++) { //>
             style = (i % 2) ? 'odd-col' : 'even-col';
-            out += '<th class="' + style + '">' + String(headers[i][1]).replace("_", "_<br />") + "</th>";
+            out += '<th class="' + style + '">' + String(rowHeaders[i][1]).replace("_", "_<br />") + "</th>";
         }
         out += "</tr>";
+        
+        // Places the row values
         for (var i = 0; i < data.rows.length; i++) {
             style = (i % 2) ? 'odd' : 'even';
 
@@ -141,13 +174,16 @@ function update_browse_data(data) {
 
 
             row = row['fields'];
-
-            if (row_class === "row-clique" || (Math.max(row[8], row[10]) - currentRow[8]) < -3)//under 3)
+            
+            // Makes sure we are not friends with the other row and
+            // are even able to attack them due to the row limitation
+            if (row_class === "row-clique" || (Math.max(row[8], row[10]) - currentRow[8]) < -3)
             {
                 stile += 'text-decoration:line-through;';
                 smart = false;
             } else
             {
+                // Calculate everything to see if its a good idea
                 var attackersLost = Math.ceil(row[7]/*atackers*/ * row[8]/*atkX*/ * 1.2 / currentRow[8]/*atkX*/)
                         + Math.ceil(row[9]/*.defenders()*/ * row[10]/*.defX()*/ * 1.2 / currentRow[8]/*.atkX()*/);
                 var attackerModifier = Math.floor(Math.abs(currentRow[8]/*.atkX()*/ - 2) / 3);
@@ -156,6 +192,7 @@ function update_browse_data(data) {
                 var fuelNet = row[6]/*.fuel()*/ - Math.ceil(attackersNeeded * Math.abs(row[0] - currentRow[0]) * Math.pow(.5, attackerModifier));
                 var moneyNet = row[4] - attackersLost * 20;
 
+                // Assign colors to the row's text based upon the productivity of it
                 if (row_class === "row-other")
                 {
                     if (moneyNet > 0 && fuelNet > 0)
@@ -169,19 +206,27 @@ function update_browse_data(data) {
                         smart = false;
                     }
                 } else
+                
+                // If it is not productive assign it 
                 {
                     stile += 'color: black;';
                     smart = false;
                 }
             }
 
-
+            // Fills in the cells with the data
             for (var j = 0; j < row.length; j++) {
                 style = (j % 2) ? 'odd-col' : 'even-col';
                 out += "<td class='" + style + "' style='" + stile + "'>" +
                         (headers[j][2] ? "<div style='width:" + headers[j][2] + ";overflow:hidden;text-overflow:ellipses;' title='" + addslashes(row[j]) + "'>" + row[j] + "</div>" : row[j]) + // truncate rows with width set
                         "</td>";
             }
+            
+            // If it is a good idea
+            //      Ie: Productive in fuel
+            //          Money
+            //          Or both
+            // Add a button in to the cell that allows you to just click to attack with the recommended attackers
             if (smart)
             {
                 out += '<td><div class="queries"><span class="query"><span class="button">' +
@@ -196,7 +241,12 @@ function update_browse_data(data) {
             }
             out += "</tr>";
         }
+        
+        // Places data into the base html
         $('#browse_content').html(out);
+        
+        // Puts a timeout on the buttons as to not spam the server with request
+        // and adhear to the timeout on each of the row actions placed on by the developers
         $(":button").click(function() {
             disableActionButtons();
         });
@@ -205,6 +255,7 @@ function update_browse_data(data) {
     onResize();
 }
 
+// Places a small disable onto the button at each click to stop spam to the server
 function disableActionButtons() {
     $(":button").each(function() {
         this.disabled = true
@@ -215,6 +266,8 @@ function disableActionButtons() {
     });
 }
 
+// Selects a row from personal ones and changes the browse data
+// to reflect the new row's possible attackers
 function select_row(id)
 {
     updateRows(id);
@@ -223,15 +276,22 @@ function select_row(id)
         updateBrowse(previousArgs);
 }
 
+// Updates the browse data and remebers which rows are being viewed
 function updateBrowse(fields) {
     previousArgs = fields;
     $.post('update/browse', fields, update_browse_data, data = 'json');
 }
 
+// Buys a certain amount of attackers
+// Not used currently
 function buyAttackers(num, id) {
     $.post("/update/queries", {"attackers": num, "query": "BuyAttackers", "row_id": id, "submit": "go"});
 }
 
+// Grabs the submitted data whenever a method is called
+// To increase some attribute of the row
+// Checks to see if they placed the keyword "max" into a field
+// and figures the max able to be bought
 function querySubmit(button){
     $('#queries_response_string').html("...<br>");
     console.log(getInputsInRow(button));
@@ -239,7 +299,7 @@ function querySubmit(button){
     
     if (inputs['defenders'] === 'max')
     {
-        inputs['defenders'] = Math.floor(currentRow[4] / 10);
+        inputs['defenders'] = Math.floor(currentRow[4] / 20);
     }else if( inputs['attackers'] === 'max' )
     {
         inputs['attackers'] = Math.floor(currentRow[4] / 10);
@@ -266,6 +326,7 @@ function querySubmit(button){
    }else if(inputs['amount'] === 'max')
    {
        //not yet implemented
+       //will be for movement of Fuel, Money, and Attackers
    }
    $.post('update/queries', inputs, update_queries_data);
 }
