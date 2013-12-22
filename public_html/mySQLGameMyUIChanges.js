@@ -1,4 +1,3 @@
-
 // Adds a link into the head of the file
 // as well as adding two other panels, one for a Legend of the changes,
 // and the other to show the attackable rows within a few hundred
@@ -299,10 +298,10 @@ function querySubmit(button){
     
     if (inputs['defenders'] === 'max')
     {
-        inputs['defenders'] = Math.floor(currentRow[4] / 20);
+        inputs['defenders'] = Math.floor(currentRow[4] / 10);
     }else if( inputs['attackers'] === 'max' )
     {
-        inputs['attackers'] = Math.floor(currentRow[4] / 10);
+        inputs['attackers'] = Math.floor(currentRow[4] / 20);
     }else if(inputs['money_factories'] === 'max')
     {
         var sum = 0;
