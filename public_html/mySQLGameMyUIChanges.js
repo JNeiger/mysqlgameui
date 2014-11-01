@@ -183,8 +183,8 @@ function update_browse_data(data) {
             } else
             {
                 // Calculate everything to see if its a good idea
-                var attackersLost = Math.ceil(row[7]/*atackers*/ * row[8]/*atkX*/ * 1.2 / currentRow[8]/*atkX*/)
-                        + Math.ceil(row[9]/*.defenders()*/ * row[10]/*.defX()*/ * 1.2 / currentRow[8]/*.atkX()*/);
+                var attackersLost = Math.ceil((row[7]/*atackers*/ * row[8]/*atkX*/ * 1.2/*enemy 'lucky' stat*/) / (currentRow[8]/*atkX*/ * 0.8/*our 'unlucky' stat*/))
+                        + Math.ceil((row[9]/*.defenders()*/ * row[10]/*.defX()*/ * 1.2/*enemy 'lucky' stat*/) / (currentRow[8]/*.atkX()*/ * 0.8/*our 'unlucky' stat*/));
                 var attackerModifier = Math.floor(Math.abs(currentRow[8]/*.atkX()*/ - 2) / 3);
                 var carry = 10 * (attackerModifier + 1);
                 attackersNeeded = attackersLost + Math.ceil(Math.max(row[4]/*.money()*/, row[6]/*.fuel()*/) / carry);
